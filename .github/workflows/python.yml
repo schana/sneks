@@ -1,0 +1,34 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: ${{ matrix.os }} ${{ matrix.python }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+          cache: 'pip'
+          cache-dependency-path: 'pyproject.toml'
+      - name: Install Tox and any other packages
+        run: |
+          pip install tox
+          pip install --pre tox-gh-actions
+      - name: Cache tox
+        uses: actions/cache@v3
+        with:
+          path: .tox
+          key: ${{ matrix.os }}-${{ matrix.python}}-tox-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('tox.ini') }}-${{ hashFiles('.github/workflows/python.yml') }}
+      - name: Run Tox
+        run: |
+          tox
