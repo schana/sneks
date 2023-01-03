@@ -1,6 +1,6 @@
 from collections import deque
 from dataclasses import dataclass
-from typing import Set
+from typing import Set, Tuple
 
 from sneks.core.cell import Cell
 from sneks.interface.snek import Snek
@@ -42,7 +42,7 @@ class Score:
 
 
 class Mover:
-    def __init__(self, name: str, head: Cell, snek: Snek, color: tuple[int, int, int]):
+    def __init__(self, name: str, head: Cell, snek: Snek, color: Tuple[int, int, int]):
         self.name = name
         self.cells = deque([head])
         self.snek = snek

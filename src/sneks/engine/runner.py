@@ -1,11 +1,11 @@
-from typing import Optional
+from typing import Optional, List
 
 from sneks.config.config import config
 from sneks.engine.mover import NormalizedScore
 from sneks.engine.state import State
 
 
-def main() -> Optional[list[NormalizedScore]]:
+def main() -> Optional[List[NormalizedScore]]:
     runs = 0
     state = State()
     state.reset()

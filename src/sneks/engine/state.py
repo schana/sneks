@@ -12,7 +12,7 @@ from sneks.engine.mover import Mover, Score, NormalizedScore
 
 
 class State:
-    cells: set[Cell] = {
+    cells: Set[Cell] = {
         Cell(r, c)
         for r, c in itertools.product(range(board.ROWS), range(board.COLUMNS))
     }

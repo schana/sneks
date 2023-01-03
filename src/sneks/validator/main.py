@@ -1,3 +1,5 @@
+import pathlib
+
 import pytest
 
 path_to_test = "./src/sneks/template"
@@ -8,3 +10,7 @@ def main(test_path: str = None) -> int:
         global path_to_test
         path_to_test = test_path
     return pytest.main(["--pyargs", "sneks.validator"])
+
+
+def get_prefix():
+    return pathlib.Path(path_to_test)
