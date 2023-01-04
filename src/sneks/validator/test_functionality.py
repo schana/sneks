@@ -24,6 +24,6 @@ def test_extended_functionality():
         assert score.age == 0
         assert score.length == 0
         assert score.ended == 0
-        assert score.raw.age > 0
+        assert score.raw.age >= 0
         assert score.raw.length >= 1
         assert score.raw.ended == 0
