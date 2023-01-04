@@ -7,7 +7,8 @@ from sneks.core.direction import Direction
 
 class Snek(abc.ABC):
     """
-    Base snek from which submission sneks derive. This snek has no behavior.
+    Base snek from which submission sneks derive. This snek has no behavior,
+    but derivations should implement ``get_next_direction()`` to provide it.
     """
 
     #: Body of the snek represented as a list of cells, with index 0 being the head
@@ -19,7 +20,7 @@ class Snek(abc.ABC):
 
     def get_next_direction(self) -> Direction:
         """
-        Method that determines which way the snek should go next
+        Method that determines which way the snek should go next.
 
         :return: the next direction for the snek to move
         """
@@ -27,7 +28,7 @@ class Snek(abc.ABC):
 
     def get_head(self) -> Cell:
         """
-        Helper method to return the first cell from the snek's body
+        Helper method to return the first cell from the snek's body.
 
         :return: the cell representing the head of the snake
         """
@@ -35,15 +36,34 @@ class Snek(abc.ABC):
 
     def get_body(self) -> List[Cell]:
         """
-        Helper method to return the snek's body
+        Helper method to return the snek's body.
 
         :return: the list of cells making up the snake, including the head
         """
         return self.body
 
+    def get_occupied(self) -> FrozenSet[Cell]:
+        """
+        Helper method to return all occupied cells on the board. This
+        includes both cells from your snek's body and all other sneks'
+        bodies.
+
+        This can be used in your ``get_next_direction()`` to check if a cell
+        you are planning on moving to is already taken. Example::
+
+            potential_next_cell = self.get_head().get_up()
+            if potential_next_cell in self.get_occupied():
+                # potential_next_cell is already taken
+            else:
+                # potential_next_cell is free
+
+        :return: the set of occupied cells on the game board
+        """
+        return self.occupied
+
     def get_food(self) -> FrozenSet[Cell]:
         """
-        Helper method to return the current food on the board
+        Helper method to return the current food on the board.
 
         :return: the set of food on the game board
         """
@@ -51,7 +71,7 @@ class Snek(abc.ABC):
 
     def get_closest_food(self) -> Cell:
         """
-        Get the closest food to the head of the snek from the current set
+        Get the closest food to the head of the snek from the current set.
 
         :return: the Cell representing the location of the nearest food
         """
@@ -59,7 +79,13 @@ class Snek(abc.ABC):
 
     def look(self, direction: Direction) -> int:
         """
-        Look in a direction from the snek's head and get the distance to the closest obstacle
+        Look in a direction from the snek's head and get the distance to the closest obstacle.
+        An obstacle could either be an occupied cell or the game board's border.
+
+        >>> self.get_head()  # the head is in the upper left corner of the board
+        Cell(0, 0)
+        >>> self.look(Direction.LEFT)
+        0
 
         :param direction: the direction to look
         :return: the distance until the closest obstacle in the specified direction
@@ -86,11 +112,17 @@ class Snek(abc.ABC):
     ) -> Direction:
         """
         Get the next direction to travel in order to reach the destination
-        from a set of specified directions (default: all directions)
+        from a set of specified directions (default: all directions).
 
         When multiple directions have the same resulting distance, the chosen
         direction is determined by the order provided, with directions coming
-        first having precedence
+        first having precedence.
+
+        For example, to get the direction the snek should travel to close the
+        most distance between itself and the closest food, this method could be
+        used like::
+
+            self.get_direction_to_destination(self.get_closest_food())
 
         :param destination: the cell to travel towards
         :param directions: the directions to evaluate in order

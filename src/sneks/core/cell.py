@@ -13,7 +13,33 @@ from sneks.config.config import config
 @dataclass(frozen=True)
 class Cell:
     """
-    Represents a single cell on the game board
+    Represents a single cell on the game board. They can be used as reference points
+    for getting neighboring cells, like:
+
+    >>> cell = Cell(1, 1)
+    >>> cell.get_left()
+    Cell(1, 0)
+    >>> cell.get_relative_neighbor(2, 3)
+    Cell(3, 4)
+    >>> cell.get_neighbor(Direction.DOWN)
+    Cell(2, 1)
+
+    Also, it can be used to check game board boundaries, like:
+
+    >>> cell = Cell(1, 1)
+    >>> cell.is_valid()
+    True
+    >>> cell = Cell(-1, 0)
+    >>> cell.is_valid()
+    False
+
+    Finally, it can be used to calculate distance between cells:
+
+    >>> cell_a = Cell(0, 0)
+    >>> cell_b = Cell(1, 0)
+    >>> cell_a.get_distance(cell_b)
+    1.0
+
     """
 
     row: int  #:
@@ -23,10 +49,20 @@ class Cell:
     def __new__(cls, row: int, column: int) -> "Cell":
         return super().__new__(cls)
 
+    def get_relative_neighbor(self, row_offset: int, column_offset: int) -> "Cell":
+        """
+        Returns the cell with coordinates offset by the specified parameters.
+
+        :param row_offset: the amount to offset this cell's row by
+        :param column_offset: the amount to offset this cell's column by
+        :return: the cell at ``(self.row + row_offset, self.column + column_offset)``
+        """
+        return Cell(self.row + row_offset, self.column + column_offset)
+
     def get_neighbor(self, direction: Direction) -> "Cell":
         """
         Gets a Cell's neighbor in the specified direction. Note that this does
-        not perform any boundary checking and could return invalid cells
+        not perform any boundary checking and could return invalid cells.
 
         :param direction: the direction of the neighbor
         :return: the neighbor cell in the specified direction
@@ -46,29 +82,29 @@ class Cell:
         """
         :return: cell in the up direction
         """
-        return Cell(self.row - 1, self.column)
+        return self.get_relative_neighbor(-1, 0)
 
     def get_down(self) -> "Cell":
         """
         :return: cell in the down direction
         """
-        return Cell(self.row + 1, self.column)
+        return self.get_relative_neighbor(1, 0)
 
     def get_left(self) -> "Cell":
         """
         :return: cell in the left direction
         """
-        return Cell(self.row, self.column - 1)
+        return self.get_relative_neighbor(0, -1)
 
     def get_right(self) -> "Cell":
         """
         :return: cell in the right direction
         """
-        return Cell(self.row, self.column + 1)
+        return self.get_relative_neighbor(0, 1)
 
     def get_distance(self, other: "Cell") -> float:
         """
-        Gets the distance between this cell and another
+        Gets the distance between this cell and another.
 
         :param other: cell to get distance to
         :return: distance between the two cells
@@ -77,7 +113,7 @@ class Cell:
 
     def is_valid(self) -> bool:
         """
-        Checks if this cell is within the game board
+        Checks if this cell is within the game board.
 
         :return: True if the cell is in the board, False otherwise
         """
