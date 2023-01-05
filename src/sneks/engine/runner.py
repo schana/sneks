@@ -36,6 +36,7 @@ def main() -> Optional[List[NormalizedScore]]:
                 normalized = state.report()
                 for s in normalized:
                     print(f"{s.total():.4f} {s}")
+                painter.end_delay()
                 runs += 1
                 state.reset()
     else:

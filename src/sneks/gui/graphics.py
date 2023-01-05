@@ -132,5 +132,28 @@ class Painter:
         pygame.display.flip()
         if self.recorder:
             self.recorder.record_frame(self.screen)
+        self.step_delay()
+
+    def step_delay(self):
         if not config.graphics.headless:
-            pygame.time.delay(config.graphics.delay)
+            if config.graphics.step_keypress_wait:
+                self.wait_for_keypress()
+            pygame.time.delay(config.graphics.step_delay)
+
+    def end_delay(self):
+        if not config.graphics.headless:
+            if config.graphics.end_keypress_wait:
+                self.wait_for_keypress()
+            pygame.time.delay(config.graphics.end_delay)
+
+    def wait_for_keypress(self):
+        while True:
+            # allow the key to be held instead of waiting for each step
+            if any(pygame.key.get_pressed()):
+                break
+            event = pygame.event.wait()
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                break

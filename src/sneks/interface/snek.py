@@ -1,6 +1,7 @@
 import abc
 from typing import List, Sequence, FrozenSet
 
+from sneks.core.board import ROWS, COLUMNS
 from sneks.core.cell import Cell
 from sneks.core.direction import Direction
 
@@ -60,6 +61,22 @@ class Snek(abc.ABC):
         :return: the set of occupied cells on the game board
         """
         return self.occupied
+
+    def get_rows(self) -> int:
+        """
+        Helper method to return the number of rows in the game board.
+
+        :return: the number of rows in the game board
+        """
+        return ROWS
+
+    def get_columns(self) -> int:
+        """
+        Helper method to return the number of columns in the game board.
+
+        :return: the number of columns in the game board
+        """
+        return COLUMNS
 
     def get_food(self) -> FrozenSet[Cell]:
         """
