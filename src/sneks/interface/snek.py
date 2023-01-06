@@ -15,9 +15,9 @@ class Snek(abc.ABC):
     #: Body of the snek represented as a list of cells, with index 0 being the head
     body: List[Cell] = []
     #: Set of currently occupied cells on the game board
-    occupied: FrozenSet[Cell] = []
+    occupied: FrozenSet[Cell] = frozenset()
     #: Set of cells that contain food on the game board
-    food: FrozenSet[Cell] = []
+    food: FrozenSet[Cell] = frozenset()
 
     def get_next_direction(self) -> Direction:
         """

@@ -2,14 +2,16 @@ from sneks.core.cell import Cell
 from sneks.core.direction import Direction
 from sneks.engine import registrar, runner
 from sneks.engine.mover import NormalizedScore
+from sneks.interface.snek import Snek
 from sneks.validator import main
 from sneks.config.config import config
 
 
 def test_basic_functionality():
     _, snek_class = registrar.get_custom_snek(main.get_prefix())
-    snek = snek_class()
-    snek.food = [Cell(0, 0)]
+    snek: Snek = snek_class()
+    snek.food = frozenset((Cell(0, 0),))
+    snek.occupied = frozenset((Cell(1, 1),))
     snek.body = [Cell(1, 1)]
     assert snek.get_next_direction() in Direction
 
