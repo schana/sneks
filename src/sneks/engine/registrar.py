@@ -1,7 +1,6 @@
 import importlib
 import importlib.util
 import pathlib
-import sys
 from dataclasses import dataclass
 from importlib.machinery import ModuleSpec
 from types import ModuleType
@@ -33,7 +32,7 @@ def get_submissions(prefix: pathlib.Path = None) -> List[Submission]:
 
 def get_submission_classes(prefix: pathlib.Path) -> Dict[str, Snek.__class__]:
     results = {}
-    submissions = prefix.glob(f"*/")
+    submissions = set(p.parent for p in prefix.glob(f"**/submission.py"))
     for submission in submissions:
         name, snek = get_custom_snek(submission)
         if snek is not None:
@@ -66,7 +65,6 @@ def get_module(
     name = get_submission_name(prefix)
     spec = importlib.util.spec_from_file_location(name, submission)
     module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
     return name, spec, module
 
 

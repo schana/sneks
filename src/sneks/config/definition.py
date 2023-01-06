@@ -83,6 +83,6 @@ class Config:
     game: Game = field(default_factory=Game)
     graphics: Optional[Graphics] = field(default_factory=Graphics)
     runs: int = 10
-    turn_limit: int = 2000
+    turn_limit: int = 1000
     registrar_prefix: str = "./src/sneks/"
     registrar_submission_sneks: int = 1

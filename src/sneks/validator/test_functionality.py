@@ -19,6 +19,7 @@ def test_basic_functionality():
 def test_extended_functionality():
     config.graphics.display = False
     config.registrar_prefix = str(main.get_prefix().parent)
+    config.turn_limit = 100
     scores = runner.main()
     assert len(scores) == 10
     for score in scores:
