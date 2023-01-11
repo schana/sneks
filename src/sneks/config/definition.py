@@ -84,5 +84,5 @@ class Config:
     graphics: Optional[Graphics] = field(default_factory=Graphics)
     runs: int = 10
     turn_limit: int = 1000
-    registrar_prefix: str = "./src/sneks/"
+    registrar_prefix: str = "src"
     registrar_submission_sneks: int = 1

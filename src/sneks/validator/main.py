@@ -1,16 +1,9 @@
-import pathlib
-
 import pytest
 
-path_to_test = "./src/sneks/template"
+from sneks.config.config import config
 
 
 def main(test_path: str = None) -> int:
     if test_path is not None:
-        global path_to_test
-        path_to_test = test_path
+        config.registrar_prefix = test_path
     return pytest.main(["--pyargs", "sneks.validator"])
-
-
-def get_prefix():
-    return pathlib.Path(path_to_test)

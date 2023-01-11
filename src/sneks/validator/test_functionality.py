@@ -1,15 +1,15 @@
+from sneks.config.config import config
 from sneks.core.cell import Cell
 from sneks.core.direction import Direction
 from sneks.engine import registrar, runner
 from sneks.engine.mover import NormalizedScore
 from sneks.interface.snek import Snek
-from sneks.validator import main
-from sneks.config.config import config
 
 
 def test_basic_functionality():
-    _, snek_class = registrar.get_custom_snek(main.get_prefix())
-    snek: Snek = snek_class()
+    submissions = registrar.get_submissions()
+    assert 1 == len(submissions)
+    snek: Snek = submissions[0].snek
     snek.food = frozenset((Cell(0, 0),))
     snek.occupied = frozenset((Cell(1, 1),))
     snek.body = [Cell(1, 1)]
@@ -18,7 +18,6 @@ def test_basic_functionality():
 
 def test_extended_functionality():
     config.graphics.display = False
-    config.registrar_prefix = str(main.get_prefix().parent)
     config.turn_limit = 100
     scores = runner.main()
     assert len(scores) == 10

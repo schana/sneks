@@ -16,11 +16,9 @@ class Submission:
     snek: Snek
 
 
-def get_submissions(prefix: pathlib.Path = None) -> List[Submission]:
-    if prefix is None:
-        prefix = pathlib.Path(config.registrar_prefix)
+def get_submissions() -> List[Submission]:
     sneks: List[Submission] = []
-    snek_classes = get_submission_classes(prefix)
+    snek_classes = get_submission_classes()
     for name, snek in snek_classes.items():
         if config.registrar_submission_sneks > 1:
             for i in range(config.registrar_submission_sneks):
@@ -30,9 +28,12 @@ def get_submissions(prefix: pathlib.Path = None) -> List[Submission]:
     return sneks
 
 
-def get_submission_classes(prefix: pathlib.Path) -> Dict[str, Snek.__class__]:
+def get_submission_classes() -> Dict[str, Snek.__class__]:
     results = {}
-    submissions = set(p.parent for p in prefix.glob(f"**/submission.py"))
+    submissions = set(
+        p.parent
+        for p in pathlib.Path(config.registrar_prefix).glob(f"**/submission.py")
+    )
     for submission in submissions:
         name, snek = get_custom_snek(submission)
         if snek is not None:
@@ -40,32 +41,11 @@ def get_submission_classes(prefix: pathlib.Path) -> Dict[str, Snek.__class__]:
     return results
 
 
-def get_submission_files(prefix: pathlib.Path) -> List[pathlib.Path]:
-    suffix = "submission.py"
-    return list(prefix.glob(f"**/{suffix}"))
-
-
-def get_submission(prefix: pathlib.Path) -> Optional[pathlib.Path]:
-    files = get_submission_files(prefix)
-    if files:
-        return files[0]
-    return None
-
-
-def get_submission_name(prefix: pathlib.Path) -> str:
-    return prefix.parts[-1]
-
-
-def get_module(
-    prefix: pathlib.Path,
-) -> (Optional[str], Optional[ModuleSpec], Optional[ModuleType]):
-    submission = get_submission(prefix)
-    if submission is None:
-        return None, None, None
-    name = get_submission_name(prefix)
-    spec = importlib.util.spec_from_file_location(name, submission)
-    module = importlib.util.module_from_spec(spec)
-    return name, spec, module
+def get_custom_snek(prefix: pathlib.Path) -> (Optional[str], Optional[Snek]):
+    name, module = load_module(prefix)
+    if module is None:
+        return None, None
+    return name, module.CustomSnek
 
 
 def load_module(prefix: pathlib.Path) -> (Optional[str], Optional[ModuleType]):
@@ -75,8 +55,29 @@ def load_module(prefix: pathlib.Path) -> (Optional[str], Optional[ModuleType]):
     return name, module
 
 
-def get_custom_snek(prefix: pathlib.Path) -> (Optional[str], Optional[Snek]):
-    name, module = load_module(prefix)
-    if module is None:
-        return None, None
-    return name, module.CustomSnek
+def get_module(
+    prefix: pathlib.Path,
+) -> (Optional[str], Optional[ModuleSpec], Optional[ModuleType]):
+    submission = get_submission(prefix)
+    if submission is None:
+        return None, None, None
+    name = get_submission_name(submission)
+    spec = importlib.util.spec_from_file_location(name, submission)
+    module = importlib.util.module_from_spec(spec)
+    return name, spec, module
+
+
+def get_submission(prefix: pathlib.Path) -> Optional[pathlib.Path]:
+    files = get_submission_files(prefix)
+    if files:
+        return files[0]
+    return None
+
+
+def get_submission_files(prefix: pathlib.Path) -> List[pathlib.Path]:
+    suffix = "submission.py"
+    return list(prefix.glob(f"**/{suffix}"))
+
+
+def get_submission_name(prefix: pathlib.Path) -> str:
+    return str(prefix.relative_to(config.registrar_prefix).parent)
