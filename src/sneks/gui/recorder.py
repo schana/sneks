@@ -2,8 +2,11 @@ import os
 import pathlib
 import uuid
 
-import pygame.image
-from pygame import Surface
+try:
+    import pygame.image
+    from pygame import Surface
+except ModuleNotFoundError:
+    pygame = object()
 
 from sneks.config.config import config
 

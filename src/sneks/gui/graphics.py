@@ -3,7 +3,10 @@ import os
 import struct
 import sys
 
-import pygame
+try:
+    import pygame
+except ModuleNotFoundError:
+    pygame = object()
 
 from sneks.config.config import config
 from sneks.gui.recorder import Recorder
