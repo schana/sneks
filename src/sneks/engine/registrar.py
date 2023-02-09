@@ -1,6 +1,7 @@
 import importlib
 import importlib.util
 import pathlib
+import sys
 from dataclasses import dataclass
 from importlib.machinery import ModuleSpec
 from types import ModuleType
@@ -52,6 +53,7 @@ def load_module(prefix: pathlib.Path) -> (Optional[str], Optional[ModuleType]):
     name, spec, module = get_module(prefix)
     if module is not None:
         spec.loader.exec_module(module)
+        sys.modules[name] = module
     return name, module
 
 

@@ -49,6 +49,9 @@ class Cell:
     def __new__(cls, row: int, column: int) -> "Cell":
         return super().__new__(cls)
 
+    def __getnewargs__(self):
+        return self.row, self.column
+
     def get_relative_neighbor(self, row_offset: int, column_offset: int) -> "Cell":
         """
         Returns the cell with coordinates offset by the specified parameters.
