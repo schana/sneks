@@ -29,3 +29,18 @@ def test_extended_functionality():
         assert score.raw.age >= 0
         assert score.raw.length >= 1
         assert score.raw.ended == 0
+
+
+def test_multiple_functionality():
+    config.graphics.display = False
+    config.registrar_submission_sneks = 100
+    scores = runner.main()
+    assert len(scores) == 1000
+    for score in scores:
+        assert isinstance(score, NormalizedScore)
+        assert 0 <= score.age <= 1
+        assert 0 <= score.length <= 1
+        assert 0 <= score.ended <= 1
+        assert score.raw.age >= 0
+        assert score.raw.length >= 1
+        assert score.raw.ended >= 0
